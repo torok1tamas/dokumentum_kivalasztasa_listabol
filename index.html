@@ -13,9 +13,13 @@
 </head>
 
 <body>
-  <div id="select_fields">
+  <!--select fields-->
+  <form id="doclink">
+    <div id="select_fields">
 
-  </div>
+    </div>
+    <input type="submit" id="submitform">
+  </form>
 
   <!--felugró ablakban dokumentum listából választás new-->
       <div id="createdoc_section_doclist_new">
@@ -57,6 +61,7 @@
        </div>
 
 <script>
+//create select fields in loop
 for (i=1;i<11;i++) {
   $("#select_fields").append("<label for='createdoc_doclink"+i+"'>Doclink "+i+" : </label>");
   $("#select_fields").append("<input type='text' id='createdoc_doclink"+i+"' name='createdoc_doclink"+i+"'>");
@@ -92,7 +97,7 @@ window.onclick = function(event) {
 </script>
 
 <script>
-//event settings
+//event settings and functions
 function getlist(id) {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -140,6 +145,21 @@ function getdoc_new(i) {
  $('#doclist_new').DataTable().destroy();
 
 }
+
+$("#submitform").click( function() {
+    docs = [];
+    for (i=1;i<11;i++) {
+      if ($("#createdoc_doclink"+i).val() == "") { continue;}
+      docs.push($("#createdoc_doclink"+i).val());
+    }
+    if (!docs.length == 0) {
+    alert(docs + " are selected as linked document(s). Thank you.");
+    event.preventDefault();
+  } else {
+    alert("Please select at least one document to link");
+    event.preventDefault();
+  }
+  });
 </script>
 
 </body>

@@ -1,8 +1,19 @@
 
-* {
-  margin: 0; padding: 0;
+#doclink label {
+  display: inline-block;
+  margin-bottom: 1em;
+  width: 10em;
 }
 
+#doclink input {
+  width: 15em;
+  margin-bottom: 1em;
+}
+
+#doclink button {
+  margin-left: 1em;
+  margin-bottom: 1em;
+}
 
 /* The Modal (background) */
 .modal {
