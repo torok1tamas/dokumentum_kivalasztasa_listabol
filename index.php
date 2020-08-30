@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+  <link rel="stylesheet" type="text/css" href="main.css">
+
+  <title>Select Document Page</title>
+</head>
+
+<body>
+  <div id="select_fields">
+
+  </div>
+
+  <!--felugró ablakban dokumentum listából választás new-->
+      <div id="createdoc_section_doclist_new">
+
+            <!-- The Modal -->
+            <div id="myModal_doclist_new" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+              <div class="modal-header">
+                <span class="close_doclist_new">&times;</span>
+                <h2>Select document</h2>
+              </div>
+              <div class="modal-body">
+
+                      <button id="SSP" onclick="getlist(this.id)">SSP</button>
+                      <button id="QM" onclick="getlist(this.id)">QM</button>
+                      <button id="EXT" onclick="getlist(this.id)">EXT</button>
+                      <button id="FO" onclick="getlist(this.id)">Form</button>
+
+                                  <table id="doclist_new" class="display compact nowrap cell-border">
+                                   </table>
+                                   <input type="hidden" id="actualdoclink_new"/>
+                                   <input type="hidden" id="actualdocname_new"/>
+
+                                <br />
+                              <br />
+
+
+                <br />
+                <br />
+              </div>
+              <div class="modal-footer">
+                <span>Select main category first (buttons) to get list of documents</span>
+              </div>
+            </div>
+              </div>
+
+       </div>
+
+<script>
+for (i=1;i<11;i++) {
+  $("#select_fields").append("<label for='createdoc_doclink"+i+"'>Doclink "+i+" : </label>");
+  $("#select_fields").append("<input type='text' id='createdoc_doclink"+i+"' name='createdoc_doclink"+i+"'>");
+  $("#select_fields").append("<button type='button' id='myBtn_doclist"+i+"' onclick='opendoclist_new("+i+")'>Select</button>");
+  $("#select_fields").append("<br />");
+}
+</script>
+
+<script>
+//modal settings
+function opendoclist_new(i) {
+  $('#doclist_new').empty();
+  document.getElementById("myModal_doclist_new").style.display = "block";
+  document.getElementById("actualdoclink_new").value = i;
+}
+
+// Get the <span> element that closes the modal
+var span_doclist_new = document.getElementsByClassName("close_doclist_new")[0];
+
+// When the user clicks on <span> (x), close the modal
+span_doclist_new.onclick = function() {
+  document.getElementById("myModal_doclist_new").style.display = "none";
+   $('#doclist_new').DataTable().destroy();
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == myModal_doclist_new) {
+    document.getElementById("myModal_doclist_new").style.display = "none";
+     $('#doclist_new').DataTable().destroy();
+  }
+}
+</script>
+
+<script>
+//event settings
+function getlist(id) {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+       createTable(this,id);
+    }
+};
+xhttp.open("GET", "docdata.xml", true);
+xhttp.send();
+}
+
+function createTable(xml,type) {
+  var i;
+  var xmlDoc = xml.responseXML;
+  var table="<thead><tr><th>Document</th><th>Title</th><th>Author</th><th>Version</th><th>Option</th></tr></thead>";
+  var x = xmlDoc.getElementsByTagName("DOC");
+  table += "<tbody>"
+  for (i = 0; i <x.length; i++) {
+    var str = x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue;
+    if (!str.includes(type)) { continue; }
+    table += "<tr><td id=doc" + i + ">" +
+    x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue +
+    "</td><td>" +
+    x[i].getElementsByTagName("TITLE")[0].childNodes[0].nodeValue +
+    "</td><td>" +
+    x[i].getElementsByTagName("AUTHOR")[0].childNodes[0].nodeValue +
+    "</td><td>" +
+    x[i].getElementsByTagName("VERSION")[0].childNodes[0].nodeValue +
+    "</td><td><button onclick='getdoc_new(" + i + ")'>Get Doc</button></td></tr>";
+  }
+  table += "</tbody>"
+  document.getElementById("doclist_new").innerHTML = table;
+   $('#doclist_new').DataTable().destroy();
+    $('#doclist_new').DataTable();
+}
+
+function getdoc_new(i) {
+  var doclink_id = $("#actualdoclink_new").val();
+  var doc_id = i;
+  var existing = [];
+ alert($("#doc" + doc_id).text() + " will be added to linked documents");
+
+ $("#createdoc_doclink" + doclink_id).val($("#doc" + doc_id).text());
+ document.getElementById("myModal_doclist_new").style.display = "none";
+ $('#doclist_new').DataTable().destroy();
+
+}
+</script>
+
+</body>
+</html>
